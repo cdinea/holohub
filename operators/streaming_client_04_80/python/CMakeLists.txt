@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-FileCopyrightText: Copyright (c) 2024-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,9 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required(VERSION 3.20)
-project(video_streaming LANGUAGES NONE)
-
-add_holohub_application(video_streaming_client DEPENDS OPERATORS streaming_client)
-add_holohub_application(video_streaming_server DEPENDS OPERATORS streaming_server)
-
+include(pybind11_add_holohub_module)
+pybind11_add_holohub_module(
+    CPP_CMAKE_TARGET streaming_client
+    CLASS_NAME "StreamingClientOp"
+    SOURCES streaming_client_04_80.cpp
+) 
