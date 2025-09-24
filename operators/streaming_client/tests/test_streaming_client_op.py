@@ -53,7 +53,16 @@ class TestStreamingClientOp:
     @pytest.fixture
     def fragment(self):
         """Provide a mock Holoscan Fragment."""
-        return Mock()
+        try:
+            from holoscan.core import Fragment
+            # Try to create a real Fragment for testing
+            return Fragment()
+        except Exception:
+            # Fallback to Mock if Fragment creation fails
+            mock_fragment = Mock()
+            # Add necessary attributes that StreamingClientOp might expect
+            mock_fragment.name = "test_fragment"
+            return mock_fragment
 
     def test_streaming_client_op_init_basic(self, fragment):
         """Test basic StreamingClientOp initialization and properties."""
