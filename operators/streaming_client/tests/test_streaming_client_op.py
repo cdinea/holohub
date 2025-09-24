@@ -39,14 +39,10 @@ except ImportError:
 
 
 try:
-    from holohub.streaming_client import StreamingClientOp
-except ImportError:
-    try:
-        # Try alternative import path
-        from holohub.streaming_client_operator import StreamingClientOp
-    except ImportError as e:
-        pytest.fail(f"Failed to import StreamingClientOp: {e}. "
-                    "Ensure the operator is built and available.")
+    from holohub.streaming_client_operator import StreamingClientOp
+except ImportError as e:
+    pytest.fail(f"Failed to import StreamingClientOp: {e}. "
+                "Ensure the operator is built and available.")
 
 
 
