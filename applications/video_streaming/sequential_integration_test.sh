@@ -26,8 +26,8 @@ echo "Step 1: Building applications..."
 
 echo ""
 echo "Step 2: Starting streaming server in background..."
-# Run server and redirect output to log file
-./holohub run video_streaming_server --language cpp > streamingserver.log 2>&1 &
+# Run server integration test and redirect output to log file
+./holohub test video_streaming_server > streamingserver.log 2>&1 &
 SERVER_PID=$!
 echo "  Server PID: $SERVER_PID"
 
@@ -46,8 +46,8 @@ echo "  ✓ Server is running"
 
 echo ""
 echo "Step 3: Starting streaming client in background (replayer mode)..."
-# Run client and redirect output to log file
-./holohub run video_streaming_client --language cpp > streamingclient.log 2>&1 &
+# Run client integration test and redirect output to log file
+./holohub test video_streaming_client > streamingclient.log 2>&1 &
 CLIENT_PID=$!
 echo "  Client PID: $CLIENT_PID"
 
