@@ -86,6 +86,13 @@ if(BUILD_TESTING)
                  return 0
                fi
                
+               # Search for endoscopy directory anywhere under /workspace (last resort)
+               local found_path=\$(find /workspace -type d -name \"endoscopy\" -path \"*/data/endoscopy\" 2>/dev/null | head -1)
+               if [ -n \"\$found_path\" ]; then
+                 echo \"\$found_path\"
+                 return 0
+               fi
+               
                return 1
              }
              
@@ -96,6 +103,13 @@ if(BUILD_TESTING)
                echo \"  - /workspace/holohub/data/endoscopy\"
                echo \"  - ./data/endoscopy\"
                echo \"  - data/endoscopy\"
+               echo \"  - ../data/endoscopy\"
+               echo \"  - Recursive search under /workspace\"
+               echo \"\"
+               echo \"Diagnostic information:\"
+               echo \"  Current directory: \$(pwd)\"
+               echo \"  HOLOHUB_DATA_DIR: \${HOLOHUB_DATA_DIR:-NOT SET}\"
+               echo \"  Workspace contents (if exists): \$(ls -la /workspace/holohub/data 2>/dev/null | head -5 || echo 'N/A')\"
                exit 1
              fi
              
@@ -371,6 +385,13 @@ if(BUILD_TESTING)
                    return 0
                  fi
                  
+                 # Search for endoscopy directory anywhere under /workspace (last resort)
+                 local found_path=\$(find /workspace -type d -name \"endoscopy\" -path \"*/data/endoscopy\" 2>/dev/null | head -1)
+                 if [ -n \"\$found_path\" ]; then
+                   echo \"\$found_path\"
+                   return 0
+                 fi
+                 
                  return 1
                }
                
@@ -381,6 +402,13 @@ if(BUILD_TESTING)
                  echo \"  - /workspace/holohub/data/endoscopy\"
                  echo \"  - ./data/endoscopy\"
                  echo \"  - data/endoscopy\"
+                 echo \"  - ../data/endoscopy\"
+                 echo \"  - Recursive search under /workspace\"
+                 echo \"\"
+                 echo \"Diagnostic information:\"
+                 echo \"  Current directory: \$(pwd)\"
+                 echo \"  HOLOHUB_DATA_DIR: \${HOLOHUB_DATA_DIR:-NOT SET}\"
+                 echo \"  Workspace contents (if exists): \$(ls -la /workspace/holohub/data 2>/dev/null | head -5 || echo 'N/A')\"
                  exit 1
                fi
                
