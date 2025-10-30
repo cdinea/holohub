@@ -86,7 +86,13 @@ if(BUILD_TESTING)
 
              # Start server in background with log capture
              echo 'Starting streaming server...'
-             ./applications/video_streaming/video_streaming_server/cpp/streaming_server_demo --config applications/video_streaming/video_streaming_server/cpp/streaming_server_demo.yaml > \$SERVER_LOG 2>&1 &
+             # Find the streaming_server_demo executable in the build directory
+             SERVER_EXEC=$(find ${CMAKE_BINARY_DIR} -name "streaming_server_demo" -type f 2>/dev/null | head -1)
+             if [ -z "$SERVER_EXEC" ]; then
+               echo "✗ Error: Could not find streaming_server_demo executable"
+               exit 1
+             fi
+             "$SERVER_EXEC" --config applications/video_streaming/video_streaming_server/cpp/streaming_server_demo.yaml > \$SERVER_LOG 2>&1 &
              SERVER_PID=\$!
 
              # Wait for server to start and check logs
@@ -105,7 +111,13 @@ if(BUILD_TESTING)
 
              # Start client in background with log capture
              echo 'Starting streaming client...'
-             ./applications/video_streaming/video_streaming_client/cpp/streaming_client_demo --config applications/video_streaming/video_streaming_client/cpp/streaming_client_demo_replayer.yaml --data \"\$DATA_PATH\" > \$CLIENT_LOG 2>&1 &
+             # Find the streaming_client_demo executable in the build directory
+             CLIENT_EXEC=$(find ${CMAKE_BINARY_DIR} -name "streaming_client_demo" -type f 2>/dev/null | grep -v ".cpp" | head -1)
+             if [ -z "$CLIENT_EXEC" ]; then
+               echo "✗ Error: Could not find streaming_client_demo executable"
+               exit 1
+             fi
+             "$CLIENT_EXEC" --config applications/video_streaming/video_streaming_client/cpp/streaming_client_demo_replayer.yaml --data "\$DATA_PATH" > \$CLIENT_LOG 2>&1 &
              CLIENT_PID=\$!
 
              # Let streaming run for 30 seconds
@@ -357,7 +369,8 @@ if(BUILD_TESTING)
 
                # Start Python server in background with log capture
                echo 'Starting Python streaming server...'
-               python3 ./applications/video_streaming/video_streaming_server/python/streaming_server_demo.py --width 854 --height 480 > \$SERVER_LOG 2>&1 &
+               # Find and run Python server script
+               python3 applications/video_streaming/video_streaming_server/python/streaming_server_demo.py --width 854 --height 480 > \$SERVER_LOG 2>&1 &
                SERVER_PID=\$!
 
                # Wait for server to start and check logs
@@ -376,7 +389,7 @@ if(BUILD_TESTING)
 
                # Start Python client in background with log capture (using replayer for integration test)
                echo 'Starting Python streaming client...'
-               python3 ./applications/video_streaming/video_streaming_client/python/streaming_client_demo.py --source replayer --width 854 --height 480 > \$CLIENT_LOG 2>&1 &
+               python3 applications/video_streaming/video_streaming_client/python/streaming_client_demo.py --source replayer --width 854 --height 480 > \$CLIENT_LOG 2>&1 &
                CLIENT_PID=\$!
 
                # Let streaming run for 30 seconds
