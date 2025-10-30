@@ -130,12 +130,26 @@ if(BUILD_TESTING)
              # Start server in background with log capture
              echo 'Starting streaming server...'
              # Find the streaming_server_demo executable in the build directory
-             SERVER_EXEC=$(find ${CMAKE_BINARY_DIR} -name "streaming_server_demo" -type f 2>/dev/null | head -1)
-             if [ -z "$SERVER_EXEC" ]; then
-               echo "✗ Error: Could not find streaming_server_demo executable"
+             SERVER_EXEC=\"\"
+             # Try known build paths first
+             if [ -f \"/workspace/holohub/build-video_streaming/applications/video_streaming/video_streaming_server/cpp/streaming_server_demo\" ]; then
+               SERVER_EXEC=\"/workspace/holohub/build-video_streaming/applications/video_streaming/video_streaming_server/cpp/streaming_server_demo\"
+             elif [ -f \"applications/video_streaming/video_streaming_server/cpp/streaming_server_demo\" ]; then
+               SERVER_EXEC=\"applications/video_streaming/video_streaming_server/cpp/streaming_server_demo\"
+             elif [ -f \"${CMAKE_BINARY_DIR}/applications/video_streaming/video_streaming_server/cpp/streaming_server_demo\" ]; then
+               SERVER_EXEC=\"${CMAKE_BINARY_DIR}/applications/video_streaming/video_streaming_server/cpp/streaming_server_demo\"
+             else
+               # Fallback: search for the executable
+               SERVER_EXEC=\$(find ${CMAKE_BINARY_DIR} -name \"streaming_server_demo\" -type f 2>/dev/null | grep -v \".cpp\" | head -1)
+             fi
+             if [ -z \"\$SERVER_EXEC\" ]; then
+               echo \"✗ Error: Could not find streaming_server_demo executable\"
+               echo \"  Searched in: /workspace/holohub/build-video_streaming/applications/video_streaming/video_streaming_server/cpp/\"
+               echo \"  Searched in: applications/video_streaming/video_streaming_server/cpp/\"
+               echo \"  CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}\"
                exit 1
              fi
-             "$SERVER_EXEC" --config applications/video_streaming/video_streaming_server/cpp/streaming_server_demo.yaml > \$SERVER_LOG 2>&1 &
+             \"\$SERVER_EXEC\" --config applications/video_streaming/video_streaming_server/cpp/streaming_server_demo.yaml > \$SERVER_LOG 2>&1 &
              SERVER_PID=\$!
 
              # Wait for server to start and check logs
@@ -155,12 +169,26 @@ if(BUILD_TESTING)
              # Start client in background with log capture
              echo 'Starting streaming client...'
              # Find the streaming_client_demo executable in the build directory
-             CLIENT_EXEC=$(find ${CMAKE_BINARY_DIR} -name "streaming_client_demo" -type f 2>/dev/null | grep -v ".cpp" | head -1)
-             if [ -z "$CLIENT_EXEC" ]; then
-               echo "✗ Error: Could not find streaming_client_demo executable"
+             CLIENT_EXEC=\"\"
+             # Try known build paths first
+             if [ -f \"/workspace/holohub/build-video_streaming/applications/video_streaming/video_streaming_client/cpp/streaming_client_demo\" ]; then
+               CLIENT_EXEC=\"/workspace/holohub/build-video_streaming/applications/video_streaming/video_streaming_client/cpp/streaming_client_demo\"
+             elif [ -f \"applications/video_streaming/video_streaming_client/cpp/streaming_client_demo\" ]; then
+               CLIENT_EXEC=\"applications/video_streaming/video_streaming_client/cpp/streaming_client_demo\"
+             elif [ -f \"${CMAKE_BINARY_DIR}/applications/video_streaming/video_streaming_client/cpp/streaming_client_demo\" ]; then
+               CLIENT_EXEC=\"${CMAKE_BINARY_DIR}/applications/video_streaming/video_streaming_client/cpp/streaming_client_demo\"
+             else
+               # Fallback: search for the executable
+               CLIENT_EXEC=\$(find ${CMAKE_BINARY_DIR} -name \"streaming_client_demo\" -type f 2>/dev/null | grep -v \".cpp\" | head -1)
+             fi
+             if [ -z \"\$CLIENT_EXEC\" ]; then
+               echo \"✗ Error: Could not find streaming_client_demo executable\"
+               echo \"  Searched in: /workspace/holohub/build-video_streaming/applications/video_streaming/video_streaming_client/cpp/\"
+               echo \"  Searched in: applications/video_streaming/video_streaming_client/cpp/\"
+               echo \"  CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}\"
                exit 1
              fi
-             "$CLIENT_EXEC" --config applications/video_streaming/video_streaming_client/cpp/streaming_client_demo_replayer.yaml --data "\$DATA_PATH" > \$CLIENT_LOG 2>&1 &
+             \"\$CLIENT_EXEC\" --config applications/video_streaming/video_streaming_client/cpp/streaming_client_demo_replayer.yaml --data \"\$DATA_PATH\" > \$CLIENT_LOG 2>&1 &
              CLIENT_PID=\$!
 
              # Let streaming run for 30 seconds
