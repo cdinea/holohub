@@ -31,24 +31,45 @@ if(BUILD_TESTING)
              echo '=== Integration Test with Log Verification ==='
              echo 'Starting server and client with log capture...'
 
-             # Determine data directory path - use HOLOHUB_DATA_DIR if set, otherwise fall back to standard path
-             DATA_DIR=\${HOLOHUB_DATA_DIR:-${HOLOHUB_DATA_DIR}}
-             if [ -z \"\$DATA_DIR\" ]; then
-               DATA_DIR=\"${CMAKE_SOURCE_DIR}/data\"
-             fi
-
-             # Find the actual endoscopy data directory
-             if [ -d \"\$DATA_DIR/endoscopy\" ]; then
-               DATA_PATH=\"\$DATA_DIR/endoscopy\"
-             elif [ -d \"\$DATA_DIR\" ]; then
-               DATA_PATH=\"\$DATA_DIR\"
-             else
-               echo \"✗ Error: Could not find data directory. Tried:\"
-               echo \"  - \$DATA_DIR/endoscopy\"
-               echo \"  - \$DATA_DIR\"
+             # Determine data directory path - use HOLOHUB_DATA_DIR if set at runtime, then check common paths
+             find_data_dir() {
+               # Try environment variable first
+               if [ -n \"\$HOLOHUB_DATA_DIR\" ] && [ -d \"\$HOLOHUB_DATA_DIR/endoscopy\" ]; then
+                 echo \"\$HOLOHUB_DATA_DIR/endoscopy\"
+                 return 0
+               fi
+               
+               # Try /workspace/holohub/data (common in Docker)
+               if [ -d \"/workspace/holohub/data/endoscopy\" ]; then
+                 echo \"/workspace/holohub/data/endoscopy\"
+                 return 0
+               fi
+               
+               # Try relative to current directory
+               if [ -d \"./data/endoscopy\" ]; then
+                 echo \"./data/endoscopy\"
+                 return 0
+               fi
+               
+               # Try build directory
+               if [ -d \"data/endoscopy\" ]; then
+                 echo \"data/endoscopy\"
+                 return 0
+               fi
+               
+               return 1
+             }
+             
+             DATA_PATH=\$(find_data_dir)
+             if [ -z \"\$DATA_PATH\" ]; then
+               echo \"✗ Error: Could not find endoscopy data directory. Tried:\"
+               echo \"  - \$HOLOHUB_DATA_DIR/endoscopy (from env var)\"
+               echo \"  - /workspace/holohub/data/endoscopy\"
+               echo \"  - ./data/endoscopy\"
+               echo \"  - data/endoscopy\"
                exit 1
              fi
-
+             
              echo \"Using data directory: \$DATA_PATH\"
 
              # Initialize variables
@@ -277,24 +298,45 @@ if(BUILD_TESTING)
                export PYTHONPATH=${CMAKE_BINARY_DIR}/python/lib:\$PYTHONPATH
                echo \"PYTHONPATH: \$PYTHONPATH\"
 
-               # Determine data directory path - use HOLOHUB_DATA_DIR if set, otherwise fall back to standard path
-               DATA_DIR=\${HOLOHUB_DATA_DIR:-${HOLOHUB_DATA_DIR}}
-               if [ -z \"\$DATA_DIR\" ]; then
-                 DATA_DIR=\"${CMAKE_SOURCE_DIR}/data\"
-               fi
-
-               # Find the actual endoscopy data directory
-               if [ -d \"\$DATA_DIR/endoscopy\" ]; then
-                 DATA_PATH=\"\$DATA_DIR/endoscopy\"
-               elif [ -d \"\$DATA_DIR\" ]; then
-                 DATA_PATH=\"\$DATA_DIR\"
-               else
-                 echo \"✗ Error: Could not find data directory. Tried:\"
-                 echo \"  - \$DATA_DIR/endoscopy\"
-                 echo \"  - \$DATA_DIR\"
+               # Determine data directory path - use HOLOHUB_DATA_DIR if set at runtime, then check common paths
+               find_data_dir() {
+                 # Try environment variable first
+                 if [ -n \"\$HOLOHUB_DATA_DIR\" ] && [ -d \"\$HOLOHUB_DATA_DIR/endoscopy\" ]; then
+                   echo \"\$HOLOHUB_DATA_DIR/endoscopy\"
+                   return 0
+                 fi
+                 
+                 # Try /workspace/holohub/data (common in Docker)
+                 if [ -d \"/workspace/holohub/data/endoscopy\" ]; then
+                   echo \"/workspace/holohub/data/endoscopy\"
+                   return 0
+                 fi
+                 
+                 # Try relative to current directory
+                 if [ -d \"./data/endoscopy\" ]; then
+                   echo \"./data/endoscopy\"
+                   return 0
+                 fi
+                 
+                 # Try build directory
+                 if [ -d \"data/endoscopy\" ]; then
+                   echo \"data/endoscopy\"
+                   return 0
+                 fi
+                 
+                 return 1
+               }
+               
+               DATA_PATH=\$(find_data_dir)
+               if [ -z \"\$DATA_PATH\" ]; then
+                 echo \"✗ Error: Could not find endoscopy data directory. Tried:\"
+                 echo \"  - \$HOLOHUB_DATA_DIR/endoscopy (from env var)\"
+                 echo \"  - /workspace/holohub/data/endoscopy\"
+                 echo \"  - ./data/endoscopy\"
+                 echo \"  - data/endoscopy\"
                  exit 1
                fi
-
+               
                echo \"Using data directory: \$DATA_PATH\"
 
                # Set environment variables for Python applications
