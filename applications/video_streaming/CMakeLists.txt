@@ -56,8 +56,8 @@ if(BUILD_TESTING)
 
              # Determine data directory path - use HOLOHUB_DATA_DIR if set at runtime, then check common paths
              find_data_dir() {
-               # Try environment variable first
-               if [ -n \"\$HOLOHUB_DATA_DIR\" ] && [ -d \"\$HOLOHUB_DATA_DIR/endoscopy\" ]; then
+               # Try environment variable first (but skip if it's just "/" or empty)
+               if [ -n \"\$HOLOHUB_DATA_DIR\" ] && [ \"\$HOLOHUB_DATA_DIR\" != \"/\" ] && [ -d \"\$HOLOHUB_DATA_DIR/endoscopy\" ]; then
                  echo \"\$HOLOHUB_DATA_DIR/endoscopy\"
                  return 0
                fi
@@ -77,6 +77,12 @@ if(BUILD_TESTING)
                # Try build directory
                if [ -d \"data/endoscopy\" ]; then
                  echo \"data/endoscopy\"
+                 return 0
+               fi
+               
+               # Try parent directory data
+               if [ -d \"../data/endoscopy\" ]; then
+                 echo \"../data/endoscopy\"
                  return 0
                fi
                
@@ -356,6 +362,12 @@ if(BUILD_TESTING)
                  # Try build directory
                  if [ -d \"data/endoscopy\" ]; then
                    echo \"data/endoscopy\"
+                   return 0
+                 fi
+                 
+                 # Try parent directory data
+                 if [ -d \"../data/endoscopy\" ]; then
+                   echo \"../data/endoscopy\"
                    return 0
                  fi
                  
