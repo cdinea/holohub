@@ -353,7 +353,7 @@ if(BUILD_TESTING)
 
                # Set environment variables for Python applications
                export HOLOSCAN_INPUT_PATH=\"\$DATA_PATH\"
-               export HOLOHUB_DATA_PATH=\"\$DATA_DIR\"
+               export HOLOHUB_DATA_PATH=\"\$DATA_PATH\"
 
                # Initialize variables
                TEST_FAILED=0
