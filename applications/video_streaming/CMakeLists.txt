@@ -17,7 +17,7 @@ cmake_minimum_required(VERSION 3.20)
 project(video_streaming LANGUAGES CXX)
 
 # Download the endoscopy sample data (required for testing and replayer mode)
-# This must happen BEFORE we add tests so the data is available
+# This must happen BEFORE we add subdirectories so the data is available everywhere
 if(HOLOHUB_DOWNLOAD_DATASETS)
   include(holoscan_download_data)
   holoscan_download_data(endoscopy
@@ -33,12 +33,18 @@ if(HOLOHUB_DOWNLOAD_DATASETS)
   )
 endif()
 
-# Build client and server applications
+# Build client and server applications using add_subdirectory
+# These are children of the video_streaming application
+# First, register them as holohub applications so the CLI can discover them
 add_holohub_application(video_streaming_client DEPENDS
                         OPERATORS video_streaming_client)
 
 add_holohub_application(video_streaming_server DEPENDS
                         OPERATORS video_streaming_server)
+
+# Then build their contents
+add_subdirectory(video_streaming_client)
+add_subdirectory(video_streaming_server)
 
 # Add integration testing
 if(BUILD_TESTING)
