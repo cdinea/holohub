@@ -432,8 +432,19 @@ if(BUILD_TESTING)
 
                # Start Python server in background with log capture
                echo 'Starting Python streaming server...'
-               # Find and run Python server script
-               python3 applications/video_streaming/video_streaming_server/python/streaming_server_demo.py --width 854 --height 480 > \$SERVER_LOG 2>&1 &
+               # Find and run Python server script - try multiple paths
+               SERVER_SCRIPT=\"\"
+               if [ -f \"/workspace/holohub/applications/video_streaming/video_streaming_server/python/streaming_server_demo.py\" ]; then
+                 SERVER_SCRIPT=\"/workspace/holohub/applications/video_streaming/video_streaming_server/python/streaming_server_demo.py\"
+               elif [ -f \"applications/video_streaming/video_streaming_server/python/streaming_server_demo.py\" ]; then
+                 SERVER_SCRIPT=\"applications/video_streaming/video_streaming_server/python/streaming_server_demo.py\"
+               elif [ -f \"../../../applications/video_streaming/video_streaming_server/python/streaming_server_demo.py\" ]; then
+                 SERVER_SCRIPT=\"../../../applications/video_streaming/video_streaming_server/python/streaming_server_demo.py\"
+               else
+                 echo \"✗ Error: Could not find streaming_server_demo.py\"
+                 exit 1
+               fi
+               python3 \"\$SERVER_SCRIPT\" --width 854 --height 480 > \$SERVER_LOG 2>&1 &
                SERVER_PID=\$!
 
                # Wait for server to start and check logs
@@ -452,7 +463,19 @@ if(BUILD_TESTING)
 
                # Start Python client in background with log capture (using replayer for integration test)
                echo 'Starting Python streaming client...'
-               python3 applications/video_streaming/video_streaming_client/python/streaming_client_demo.py --source replayer --width 854 --height 480 > \$CLIENT_LOG 2>&1 &
+               # Find and run Python client script - try multiple paths
+               CLIENT_SCRIPT=\"\"
+               if [ -f \"/workspace/holohub/applications/video_streaming/video_streaming_client/python/streaming_client_demo.py\" ]; then
+                 CLIENT_SCRIPT=\"/workspace/holohub/applications/video_streaming/video_streaming_client/python/streaming_client_demo.py\"
+               elif [ -f \"applications/video_streaming/video_streaming_client/python/streaming_client_demo.py\" ]; then
+                 CLIENT_SCRIPT=\"applications/video_streaming/video_streaming_client/python/streaming_client_demo.py\"
+               elif [ -f \"../../../applications/video_streaming/video_streaming_client/python/streaming_client_demo.py\" ]; then
+                 CLIENT_SCRIPT=\"../../../applications/video_streaming/video_streaming_client/python/streaming_client_demo.py\"
+               else
+                 echo \"✗ Error: Could not find streaming_client_demo.py\"
+                 exit 1
+               fi
+               python3 \"\$CLIENT_SCRIPT\" --source replayer --width 854 --height 480 > \$CLIENT_LOG 2>&1 &
                CLIENT_PID=\$!
 
                # Let streaming run for 30 seconds
