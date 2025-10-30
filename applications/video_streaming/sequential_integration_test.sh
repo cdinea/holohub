@@ -17,7 +17,7 @@ echo "=========================================="
 rm -f streamingserver.log streamingclient.log
 
 # Change to holohub root directory
-cd "$(dirname "$0")"/../../../
+cd "$(dirname "$0")/../../../../"
 
 echo ""
 echo "Step 1: Building applications..."
