@@ -357,7 +357,7 @@ if(BUILD_TESTING)
 
                # Start Python server in background with log capture
                echo 'Starting Python streaming server...'
-               python3 streaming_server_demo.py --width 854 --height 480 > \$SERVER_LOG 2>&1 &
+               python3 ./applications/video_streaming/video_streaming_server/python/streaming_server_demo.py --width 854 --height 480 > \$SERVER_LOG 2>&1 &
                SERVER_PID=\$!
 
                # Wait for server to start and check logs
@@ -376,7 +376,7 @@ if(BUILD_TESTING)
 
                # Start Python client in background with log capture (using replayer for integration test)
                echo 'Starting Python streaming client...'
-               python3 streaming_client_demo.py --source replayer --width 854 --height 480 > \$CLIENT_LOG 2>&1 &
+               python3 ./applications/video_streaming/video_streaming_client/python/streaming_client_demo.py --source replayer --width 854 --height 480 > \$CLIENT_LOG 2>&1 &
                CLIENT_PID=\$!
 
                # Let streaming run for 30 seconds
